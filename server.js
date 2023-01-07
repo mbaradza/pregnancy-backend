@@ -12,6 +12,7 @@ const sessionConfig = require('./helper/sessionConfig.js');
 const session = require('express-session');
 const swaggerJsdoc = require('swagger-jsdoc');
 const http = require("http");
+const messageService = require("./api/services/message.service");
 //Sessions Config
 app.use(session(sessionConfig))
 
@@ -70,6 +71,7 @@ const server = http.createServer(app);
 
 // Listening to port
 server.listen(3001, () => {
+  messageService.uploadMessages();
   console.log('Server running on localhost:3001');
 });
 
