@@ -1,30 +1,10 @@
-const Secret = require('../../config/dev').Secret;
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt-nodejs');
 const User = require('../user/user.model');
-
-
-// Authenticate Users
-async function authenticate({ email, password}) {
-    const user = await User.findOne({ email });
-    if (user && bcrypt.compareSync(password, user.password)) {
-        const {password, ...userWithoutPassword } = user.toObject();
-        //Set A USer Token That Expires After 3 Days
-        const token = jwt.sign({ sub: user.id }, Secret,{expiresIn:'3d'});
-    
-
-        return {
-            ...userWithoutPassword,
-            token
-        };
-    }
-}
 
 
 // Create New User
 async function create(userParam){
     // Validate
-    const duplicate = await User.findOne({ email: userParam.email });
+    const duplicate = await User.findOne({ chatId: userParam.chatId });
     if (duplicate) {
         return { 
             status: 409,
@@ -40,7 +20,7 @@ async function create(userParam){
     // Save User
     await user.save();
 
-    return User.findOne({ email: user.email});
+    return User.findOne({ chatId: user.chatId});
 
 }
 
@@ -56,6 +36,9 @@ async function getOne(_id) {
     return User.findById(_id);
 }
 
+async function findByChatId(chatId){
+    return User.findOne({ chatId: chatId})
+}
 
 // Update User
 async function update(id, userParam) {
@@ -71,17 +54,11 @@ async function update(id, userParam) {
     return User.findById(id);
 
 }
+async function existsByEmail(email) {
 
-async function checkEmailRegistration(email) {
-    return await User.findOne({ email });
+    return User.exists({email:email});
 
-    }
-
-
-
-//Delete user
-async function _delete(id) {
-    await User.deleteOne({_id: id});
 }
 
-module.exports = { authenticate, create, getAll, getOne, update, delete: _delete,checkEmailRegistration};
+
+module.exports = { create, getAll, getOne, update,findByChatId,existsByEmail};

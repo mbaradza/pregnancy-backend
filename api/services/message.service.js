@@ -1,6 +1,6 @@
 const xlsxFile = require("read-excel-file/node");
-const Message = require("../message/message.model").Message;
-var fs = require("fs");
+const Message = require("../messages/message.model").Message;
+const fs = require("fs");
 
 async function create(messageParams){   
     const message = new Message(messageParams);
@@ -71,14 +71,13 @@ async function _delete(id) {
 }
 
 async function getByDay(day) {
-    const messages=await Message.find({day:day,$or:[{deleted: false},{deleted:{$exists: false}}]}).lean();
-
-    return messages;
+    
+    return await Message.findOne({day:day,deleted: false}).lean();;
 }
 
 async function uploadMessages(){
     const path = "./files/messages.xlsx";
-    if(!Message.exists({deleted:false}) && fs.existsSync(path)){
+    if(!await Message.exists({deleted:false}) && fs.existsSync(path)){
     await xlsxFile(path, { getSheets: true }).then(async(sheets) => {
       var data =[]; 
         const sheetData = await getDataFromSheets(sheets[0].name);

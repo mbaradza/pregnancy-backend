@@ -4,33 +4,22 @@
   "description": "Pregnancy Prayer Server",
   "main": "router.js",
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
-    "connect-redis": "^5.0.0",
-    "cors": "^2.8.5",
     "cross-fetch": "^3.0.6",
     "define-property": "^2.0.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-jwt": "^8.3.0",
-    "express-session": "^1.17.1",
-    "hashids": "^2.2.1",
-    "http": "0.0.0",
+    "express-http2-workaround": "^1.1.4",
+    "http2": "^3.3.7",
     "mongodb": "^3.2.6",
     "mongoose": "^5.5.11",
-    "read-excel-file": "5.5.3",
-    "redis": "^3.0.2",
-    "socket.io": "^2.2.0",
-    "swagger-jsdoc": "^3.7.0",
-    "swagger-ui-dist": "^4.4.1",
-    "swagger-ui-express": "^4.1.2",
-    "utf-8-validate": "^5.0.2",
-    "uuid": "^3.4.0",
-    "winston": "^3.5.1"
+    "node-cron": "^3.0.2",
+    "node-telegram-bot-api": "^0.61.0",
+    "read-excel-file": "5.5.3"
   },
   "devDependencies": {},
   "scripts": {
     "test": "npm start",
-    "start": "node server.js"
+    "start": "node server.js --trace-warnings"
   },
   "author": "Morris Baradza"
 }
