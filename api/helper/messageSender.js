@@ -34,7 +34,7 @@ trackerService.findAllActive().then(async (regs)=>{
        let dailyDevelopment = message.dailyDevelopment || null
        
 
-        if(isNew){
+        if(isNew || reg.newSubscriber){
          const quotient = Math.floor(messageDay/8)
          let weeklyMessageDay = 1;
          let trimesterMessageDay = 1;
@@ -49,28 +49,32 @@ trackerService.findAllActive().then(async (regs)=>{
           weeklyMessageDay = 8*quotient
          }
          const weeklyMessage = await messageService.getByDay(weeklyMessageDay)
+        if(weeklyMessage && isNew){
+          weeklyDevelopment = weeklyMessage.weeklyDevelopment 
+        }
          const trimesterMessage = await messageService.getByDay(trimesterMessageDay)
-        if(weeklyMessage){
-          weeklyDevelopment = weeklyMessage.weeklyDevelopment
-          if(reg.newSubscriber){
+         if(reg.newSubscriber){
+           if(weeklyMessage){
           weeklyDevotional = weeklyMessage.weeklyDevotional
+           }
+          if(trimesterMessage){
+            trimesterDevotional = trimesterMessage.trimesterDevotional;
           }
+          }
+         
+        
         }
-        if(trimesterMessage){
-          trimesterDevotional = trimesterMessage.trimesterDevotional;
-        }
-        }
-       let dailyMessage= `<em>You\`re on day</em> <b>${messageDay}</b> \n \n`
+       let dailyMessage= `<\n <b><em>You\`re on day</em></b> <b>${messageDay}</b> \n \n`
        if(!reg.dailyMessagesShared){
         if(weeklyDevelopment!='null'){
-          dailyMessage = dailyMessage +`<b>Weekly Development</b> \n ${weeklyDevelopment} \n \n`
+          dailyMessage = dailyMessage +`<\n <b>Weekly Development</b> \n ${weeklyDevelopment} \n \n`
                          +`<b>Daily Development</b> \n ${dailyDevelopment} \n \n <b>Today's Prayer</b> \n ${dailyPrayer}`
           if(!reg.hasSubscribed) {
             dailyMessage = dailyMessage+'\n\n Please click the /subscribe link to get more useful information'
           }             
                 
         }else{
-          dailyMessage = dailyMessage +`<b>Daily Development</b> \n ${dailyDevelopment} \n \n <b>Today's Prayer</b> \n ${dailyPrayer}`
+          dailyMessage = dailyMessage +`\n <b>Daily Development</b> \n ${dailyDevelopment} \n \n <b>Today's Prayer</b> \n ${dailyPrayer}`
         }
         bot.sendMessage(chatId, dailyMessage,{parse_mode:"HTML"}).then(async r=>{
           await trackerService.update(reg._id, { dailyMessagesShared: true })
@@ -80,19 +84,19 @@ trackerService.findAllActive().then(async (regs)=>{
            if(!reg.dailyDevotionalsShared){
             let devotional = ''
             if(trimesterDevotional&&trimesterDevotional!='null'){
-              devotional = devotional +`<b>Trimester Devotional</b> \n ${trimesterDevotional} \n \n`
+              devotional = devotional +`\n <b>Trimester Devotional</b> \n ${trimesterDevotional} \n \n`
                             
             } 
             if(weeklyDevotional&& weeklyDevotional!='null'){
-              devotional = devotional +`<b>Weekly Devotional</b> \n ${weeklyDevotional} \n \n`
+              devotional = devotional +`\n <b>Weekly Devotional</b> \n ${weeklyDevotional} \n \n`
                                 
             }
             if(dailyDevotional && dailyDevotional!='null'){
-              devotional = devotional +`<b>Daily Devotional</b> \n ${dailyDevotional} \n \n`
+              devotional = devotional +`\n <b>Daily Devotional</b> \n ${dailyDevotional} \n \n`
             }
 
             if(dailyScripture && dailyScripture!='null'){
-              devotional = devotional +`<b>Daily Scripture</b> \n ${dailyScripture} \n \n`
+              devotional = devotional +`\n <b>Daily Scripture</b> \n ${dailyScripture} \n \n`
             }
             bot.sendMessage(chatId, devotional,{parse_mode:"HTML"}).then(async r=>{
               await trackerService.update(reg._id, { dailyDevotionalsShared: true ,newSubscriber: false})
