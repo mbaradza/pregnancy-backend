@@ -64,10 +64,10 @@ trackerService.findAllActive().then(async (regs)=>{
          
         
         }
-       let dailyMessage= `<\n <b><em>You\`re on day</em></b> <b>${messageDay}</b> \n \n`
+       let dailyMessage= `\n <b><em>You\`re on day</em></b> <b>${messageDay}</b> \n \n`
        if(!reg.dailyMessagesShared){
         if(weeklyDevelopment!='null'){
-          dailyMessage = dailyMessage +`<\n <b>Weekly Development</b> \n ${weeklyDevelopment} \n \n`
+          dailyMessage = dailyMessage +`\n <b>Weekly Development</b> \n ${weeklyDevelopment} \n \n`
                          +`<b>Daily Development</b> \n ${dailyDevelopment} \n \n <b>Today's Prayer</b> \n ${dailyPrayer}`
           if(!reg.hasSubscribed) {
             dailyMessage = dailyMessage+'\n\n Please click the /subscribe link to get more useful information'
