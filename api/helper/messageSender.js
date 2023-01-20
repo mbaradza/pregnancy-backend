@@ -33,12 +33,12 @@ trackerService.findAllActive().then(async (regs)=>{
        let weeklyDevelopment = message.weeklyDevelopment|| null
        let dailyDevelopment = message.dailyDevelopment || null
        
-
-        if(isNew || reg.newSubscriber){
+        console.log("---MY IS NEW==",isNew)
+        if(isNew || newSubscriber){
          const quotient = Math.floor(messageDay/8)
          let weeklyMessageDay = 1;
          let trimesterMessageDay = 1;
-         if(reg.newSubscriber){
+         if(newSubscriber){
          if (messageDay>84 && messageDay<=189){
           trimesterMessageDay = 85
          } else if(messageDay>189){
@@ -53,7 +53,7 @@ trackerService.findAllActive().then(async (regs)=>{
           weeklyDevelopment = weeklyMessage.weeklyDevelopment 
         }
          const trimesterMessage = await messageService.getByDay(trimesterMessageDay)
-         if(reg.newSubscriber){
+         if(newSubscriber){
            if(weeklyMessage){
           weeklyDevotional = weeklyMessage.weeklyDevotional
            }
