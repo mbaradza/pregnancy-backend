@@ -17,7 +17,8 @@ const User = new Schema({
     active: { type: Boolean },
     isSuspended: { type: Boolean },
     optedOut: {type: Boolean},
-    reasonForOptingOut: {type: String}
+    reasonForOptingOut: {type: String},
+    hasSubscribed: {type: Boolean}
 });
 
 module.exports = mongoose.model('user', User);

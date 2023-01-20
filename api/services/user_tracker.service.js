@@ -45,13 +45,15 @@ async function getOne(chatId){
 }
 
 async function findAllActive(){
-    return UserTracker.find({$and:[{optedOut:false},{sessionCompleted:false},{registrationComplete:true}]})
+    return UserTracker.find({$and:[{optedOut:false},{sessionCompleted:false},{registrationComplete:true},{intervalLocked: false}]})
 }
 async function updateInterval() {
     const trakcers =await UserTracker.find({intervalLocked:true});
 
     trakcers.map(m=>{
         m.intervalLocked=false;
+        m.dailyDevotionalsShared= false,
+        m.dailyMessagesShared=false
         m.save();
     })
 }

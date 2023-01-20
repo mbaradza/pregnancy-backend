@@ -7,9 +7,13 @@ const messageSchema = new Schema({
     day:{ type: Number },
     week: {type: Number},
     trimester: {type: Number},
-    dailyDevotional: {type: String},
-    weeklyDevotional: {type: String},
+    weeklyDevelopment: {type: String},
+    dailyDevelopment: {type: String},
     prayer: { type: String },
+    trimesterDevotional: {type: String},
+    weeklyDevotional: {type: String},
+    dailyDevotional: {type: String},
+    dailyScripture: {type: String},
     deleted: {type: Boolean},
     introduction:{type: String}
 });

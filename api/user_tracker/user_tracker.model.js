@@ -9,17 +9,17 @@ const UserTracker = new Schema({
     currentDay: {type: Number},
     pregnancyDayOnReg: { type: Number },
     expectedDeliveryDate: {type: Date}, 
-    firstIntroductionSent: {type: Boolean},
     introductionComplete: {type: Boolean},
     emailSaved: {type: Boolean},
     registrationComplete: {type: Boolean},
-    weeklyDevotionalShared: {type: Boolean},
-    dailyDevotionalShared: {type: Boolean},
-    dailyPrayerShared: {type: Boolean},
+    hasSubscribed: {type: Boolean},
+    dailyDevotionalsShared: {type: Boolean},
+    dailyMessagesShared:{type: Boolean},
     sessionCompleted: {type: Boolean},
     optedOut: {type: Boolean},
     reasonGiven: {type: Boolean},
-    intervalLocked: {type: Boolean}
+    intervalLocked: {type: Boolean},
+    newSubscriber: {type: Boolean}
 });
 
 module.exports = mongoose.model('UserTracker',UserTracker);

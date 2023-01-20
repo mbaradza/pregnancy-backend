@@ -3,24 +3,16 @@ const messageSender = require('./messageSender');
 const trackerService = require('../services/user_tracker.service')
 
 function sendMessagesAtSeven() {
-cron.schedule('0 7 * * *', () => {
+cron.schedule('*/2 * * * *', () => {
   messageSender.sendMessage();
 }, {
   scheduled: true,
   timezone: "Africa/Harare"
 });
 }
-function sendMessagesAtTen() {
-  cron.schedule('00 10 * * *', () => {
-    messageSender.sendMessage();
-  }, {
-    scheduled: true,
-    timezone: "Africa/Harare"
-  });
-  }
 
 function updateIntervalDayEnd(){
-  cron.schedule('0 22 * * *', () => {
+  cron.schedule('*/3 * * * *', () => {
     trackerService.updateInterval();
   },
     {
@@ -29,7 +21,7 @@ function updateIntervalDayEnd(){
     });
 }
 function updateIntervalMorning(){
-  cron.schedule('0 6 * * *', () => {
+  cron.schedule('0 23 * * *', () => {
     trackerService.updateInterval();
   },
     {
@@ -39,4 +31,4 @@ function updateIntervalMorning(){
 }
 
 
-module.exports = {sendMessagesAtSeven,sendMessagesAtTen,updateIntervalDayEnd,updateIntervalMorning}
+module.exports = {sendMessagesAtSeven,updateIntervalDayEnd,updateIntervalMorning}
