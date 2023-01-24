@@ -8,13 +8,13 @@ const bot = require('../pregnancy/api/services/bot.service')
 const messageService = require("./api/services/message.service");
 const cronServices = require('./api/helper/messagesCronJob');
 const http2 = require('./node_modules/http2');
-const http = require('http')
-// require('express-http2-workaround')({ express:express, http2:http2, app:app });
-// var httpsOptions = {
-//   'key' : fs.readFileSync(__dirname +'/keys/server.key'),
-//   'cert' : fs.readFileSync(__dirname +'/keys/server.crt'),
-//   'ca' : fs.readFileSync(__dirname +'/keys/server.crt')
-//};
+require('express-http2-workaround')({ express:express, http2:http2, app:app });
+const fs = require("fs");
+var httpsOptions = {
+  'key' : fs.readFileSync(__dirname +'/keys/server.key'),
+  'cert' : fs.readFileSync(__dirname +'/keys/server.crt'),
+  'ca' : fs.readFileSync(__dirname +'/keys/server.crt')
+};
 
 // Connecting to database
 mongoose.connect(config.mongo.url, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(r =>{
@@ -22,10 +22,13 @@ mongoose.connect(config.mongo.url, {useNewUrlParser: true, useCreateIndex: true,
 }).catch(r =>{ console.log('Database Not Connected!!', r)});
 
 routes.register(app);
-//const server = http2.createServer(httpsOptions,app);
-const server = http.createServer(app);
+const server = http2.createServer(httpsOptions,app);
 //SEND MESSAGES
 cronServices.sendMessagesAtSeven();
+cronServices.sendMessagesAtNine();
+cronServices.sendMessagesAtEleven();
+cronServices.sendMessagesAtOne();
+cronServices.sendMessagesAtThree();
 cronServices.updateIntervalDayEnd();
 cronServices.updateIntervalMorning();
 

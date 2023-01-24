@@ -33,7 +33,6 @@ trackerService.findAllActive().then(async (regs)=>{
        let weeklyDevelopment = message.weeklyDevelopment|| null
        let dailyDevelopment = message.dailyDevelopment || null
        
-        console.log("---MY IS NEW==",isNew)
         if(isNew || newSubscriber){
          const quotient = Math.floor(messageDay/8)
          let weeklyMessageDay = 1;
