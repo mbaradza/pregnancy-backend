@@ -75,6 +75,12 @@ trackerService.findAllActive().then(async (regs)=>{
         }else{
           dailyMessage = dailyMessage +`\n <b>Daily Development</b> \n ${dailyDevelopment} \n \n <b>Today's Prayer</b> \n ${dailyPrayer}`
         }
+        //Send Weekly Subscibe reminder
+        if(!reg.hasSubscribed && weeklyDevelopment!='null' && !isNew){
+          dailyMessage = dailyMessage+ `\n \n Dear mother-to-be , we realised that you haven't subscribed yet and are missing out on the daily 
+          devotionals. Do you want to be motivated and inspired daily using the word of God?`
+          +"Subscribe /here for $4.99 and receive our Pregnancy Prayer Guide Devotional daily."
+        }
         bot.sendMessage(chatId, dailyMessage,{parse_mode:"HTML"}).then(async r=>{
           await trackerService.update(reg._id, { dailyMessagesShared: true })
         })

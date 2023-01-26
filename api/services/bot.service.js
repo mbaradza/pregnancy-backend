@@ -18,10 +18,14 @@ bot.on('message', async (msg) => {
         }).catch(err => {
             console.log("ERROR", err)
         })
-        const secondIntroMessage = "Praying scripture for your baby is a God pleasing way to both talk and listen to our Father."
+        const secondIntroMessage = "<b>Introduction</b> \nPraying scripture for your baby is a God pleasing way to both talk and listen to our Father."
             + "When we pray scripture, we use God's own words to help express our feelings, worries, requests"
-            + " and praises. At the same time we allow His words to speak His truth and His heart back to us.";
-        const emailRequest = `Now Let's Proceed to the registration process. Please go ahead and enter your EMAIL ADDRESS(example: msthompson@gmail.com):`
+            + " and praises. At the same time we allow His words to speak His truth and His heart back to us.\n\n"
+            +"<b>About this Bot</b>\n Pregnancy Prayer Guide Bot is a Bot created for the Christian mother-to-be which gives a day-by-day guide "
+            +"of her pregnancy plus a daily prayer for her growing child.\n"
+            +"This Bot serves to encourage mummy-to-be and pray the word of God over your baby daily for the entire 280 days <em>(40 weeks)</em>  "
+            +"gestation period. \n \n"
+        const emailRequest = `Now lets start by registering.\n Enter your EMAIL ADDRESS(example: msthompson@gmail.com):`
         if (!userTracker) {
             // Create New USer    
             let user = {
@@ -41,7 +45,7 @@ bot.on('message', async (msg) => {
                 console.log("ERROR", err)
             });
             if (user) {
-                bot.sendMessage(chatId, ` Welcome to pregnancy prayer <b>${fname}</b> \n \n ${secondIntroMessage}`, { parse_mode: "HTML" }).then(async r => {
+                bot.sendMessage(chatId, ` Hello <b>${fname}</b> \n \n ${secondIntroMessage}`, { parse_mode: "HTML" }).then(async r => {
                     userTracker = {
                         chatId: chatId,
                         userId: user._id,
@@ -158,9 +162,9 @@ bot.on('message', async (msg) => {
                     const weeks = Math.floor(userTracker.pregnancyDayOnReg / 7)
                     const days = userTracker.pregnancyDayOnReg % 7
 
-                    bot.sendMessage(chatId, ` Congratulations <b>${fname}</b> you are <b><em>${weeks} </em></b> week(s) and <b><em>${days}</em></b> day(s) pregnant. Now seat back and relax whilest we walk with`
-                        + " you through your pregnancy process! We will be sharing with you some daily devotinals and prayers that will make your"
-                        + " beautiful journey easier. \n\n Please click the /subscribe link to get more useful information apart from the daily prayers and daily developments", { parse_mode: "HTML" })
+                    bot.sendMessage(chatId, ` Thank you <b>${fname}</b> for registering with Pregnancy Prayer Bot. Congratulations you are <b><em>${weeks} </em></b> week(s) and <b><em>${days}</em></b> day(s) pregnant.`
+                        + " \n\n Do you want to be motivated and inspired daily using the word of God?"
+                        +"Subscribe /here for $4.99 and receive our Pregnancy Prayer Guide Devotional daily ",{ parse_mode: "HTML" })
                 } else {
                     bot.sendMessage(chatId, " Your EXPECTED DATE OF DELIVERY should not be a past date.You entered a past date"
                         + ` <b> ${message}</b>. Please re-nter the EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" })
@@ -170,9 +174,9 @@ bot.on('message', async (msg) => {
                 bot.sendMessage(chatId, " Your EXPECTED DATE OF DELIVERY should be a valid date in the format YYYY-MM-DD.You entered an invalid response"
                     + `<em> ${message} </em>. Please re-nter the EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" });
             }
-        } else if(msg.text.toLowerCase().includes('\/subscribe' || msg.text.toLowerCase()=='subscribe')){
+        } else if(msg.text.toLowerCase().includes('\/subscribe' || '\/here') || msg.text.toLowerCase()=='subscribe'){
             if(!userTracker.hasSubscribed){
-                bot.sendMessage(chatId, "<i>To get more you need to pay</i> <em><b>USD$4.99</b></em>.Click <b>'Pay'</b> to go to the payment page",{
+                bot.sendMessage(chatId, "<i>The subscription amount is </b> <em><b>USD$4.99</b></em>.Please click <b>'Pay'</b> to go to the payment page",{
                 parse_mode: 'HTML',
                 reply_markup: {
                   keyboard: [['Pay'], ['Not Now']],
