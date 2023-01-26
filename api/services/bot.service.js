@@ -188,7 +188,7 @@ bot.on('message', async (msg) => {
 
         } else if(msg.text.toLowerCase()=='pay'){
             if(!userTracker.hasSubscribed){
-            await bot.sendMessage(chatId,`Dear <m>${fname}</m> A payment link is being generated below, please click the link and proceed to make your payment!`,{
+            await bot.sendMessage(chatId,`Dear <em>${fname}</em> A payment link is being generated below, please click the link and proceed to make your payment!`,{
               parse_mode: 'HTML',reply_markup:{remove_keyboard: true}})
             const paymentURL = await stripeService.checkout(chatId,fname,userTracker._id);
             if(paymentURL && paymentURL!='null'){
