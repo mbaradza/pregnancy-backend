@@ -174,7 +174,7 @@ bot.on('message', async (msg) => {
                 bot.sendMessage(chatId, " Your EXPECTED DATE OF DELIVERY should be a valid date in the format YYYY-MM-DD.You entered an invalid response"
                     + `<em> ${message} </em>. Please re-nter the EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" });
             }
-        } else if(msg.text.toLowerCase().includes('\/subscribe' || '\/here') || msg.text.toLowerCase()=='subscribe'){
+        } else if(msg.text.toLowerCase().includes('\/subscribe') || msg.text.toLowerCase().includes('\/here') || msg.text.toLowerCase()=='subscribe'){
             if(!userTracker.hasSubscribed){
                 bot.sendMessage(chatId, "<i>The subscription amount is </b> <em><b>USD$4.99</b></em>.Please click <b>'Pay'</b> to go to the payment page",{
                 parse_mode: 'HTML',
