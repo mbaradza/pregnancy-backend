@@ -108,14 +108,9 @@ bot.on('message', async (msg) => {
         }).catch(err => {
             console.log("USER ERROR", err)
         })
-        let userTracker = await userTrackerService.getOne(chatId).then(value => {
-            return value
-        }).catch(err => {
-            console.log("USER TRACKER ERROR", err)
-        })
+        let userTracker = await userTrackerService.getOne(chatId);
 
         const message = String(msg.text).trim();
-
         if (!userTracker.emailSaved) {
             const invalidEmail = ` The entered email <b> ${message} </b> is invalid,please. Please re-enter your EMAIL ADDRESS <em>(example: msthompson@gmail.com):</em> `
 
@@ -174,9 +169,10 @@ bot.on('message', async (msg) => {
                 bot.sendMessage(chatId, " Your EXPECTED DATE OF DELIVERY should be a valid date in the format YYYY-MM-DD.You entered an invalid response"
                     + `<em> ${message} </em>. Please re-nter the EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" });
             }
-        } else if(msg.text.toLowerCase().includes('\/subscribe') || msg.text.toLowerCase().includes('\/here') || msg.text.toLowerCase()=='subscribe'){
+        } 
+        else if(message.toLowerCase().includes('\/subscribe') || message.toLowerCase().includes('\/here') || message=='subscribe'){
             if(!userTracker.hasSubscribed){
-                bot.sendMessage(chatId, "<i>The subscription amount is </b> <em><b>USD$4.99</b></em>.Please click <b>'Pay'</b> to go to the payment page",{
+                bot.sendMessage(chatId, "<b>The subscription amount is </b> <em><b>USD$4.99</b></em>.Please click <b>'Pay'</b> to go to the payment page",{
                 parse_mode: 'HTML',
                 reply_markup: {
                   keyboard: [['Pay'], ['Not Now']],
