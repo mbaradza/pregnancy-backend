@@ -1,8 +1,10 @@
 const trackerService = require("../services/user_tracker.service");
 const messageService = require("../services/message.service")
 
-function sendMessage(bot,newRegistrantsOnly){
-  newRegistrantsOnly?trackerService.findNewRegistrants():trackerService.findAllActive().then(async (regs)=>{
+async function sendMessage(bot,newRegistrantsOnly){
+  try{
+  let regs =newRegistrantsOnly?await trackerService.findNewRegistrants(): await trackerService.findAllActive()
+
   if (Array.isArray(regs) && regs.length > 0) {
     for (reg of regs){
       //New USER
@@ -33,7 +35,10 @@ function sendMessage(bot,newRegistrantsOnly){
        let dailyDevelopment = message.dailyDevelopment || null
        
         if(isNew || newSubscriber){
-         const quotient = Math.floor(messageDay/8)
+        const dayNumber = messageDay/7
+         const quotient = Math.floor(dayNumber) 
+         const remainder = dayNumber % 7
+
          let weeklyMessageDay = 1;
          let trimesterMessageDay = 1;
          if(newSubscriber){
@@ -44,7 +49,7 @@ function sendMessage(bot,newRegistrantsOnly){
          }
         }
          if(quotient >0){
-          weeklyMessageDay = 8*quotient
+          weeklyMessageDay = (remainder==0?(7*quotient)-6:((7*quotient)+1))
          }
          const weeklyMessage = await messageService.getByDay(weeklyMessageDay)
         if(weeklyMessage && isNew){
@@ -113,7 +118,10 @@ function sendMessage(bot,newRegistrantsOnly){
     }
   }
 }
-})
+
+}catch(ex){
+  throw ex
+}
 }
 
 

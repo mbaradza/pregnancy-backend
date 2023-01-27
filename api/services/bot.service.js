@@ -144,7 +144,7 @@ bot.on('message', async (msg) => {
                 var today = new Date()
 
                 if (utilService.checkDateIsValidFutureDate(new Date(), convertedDate)) {
-                    const currentPregnancyDay = 280-Math.floor((convertedDate.getTime()- today.getTime())/(1000*3600*24))
+                    const currentPregnancyDay = 280-(convertedDate.getTime()- today.getTime())/(1000*3600*24)
                     if(currentPregnancyDay<=0){
                         bot.sendMessage(chatId, `Your EXPECTED DATE OF DELIVERY <b> ${message}</b> is out of the expected range.`
                         + ` Please verify and re-enter EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" })
