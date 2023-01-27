@@ -141,18 +141,19 @@ bot.on('message', async (msg) => {
             if (utilService.isValidDate(message)) {
                 var timestamp = Date.parse(message)
                 var convertedDate = new Date(timestamp);
-                var today = new Date()
-
+                var today = new Date(new Date().setUTCHours(0,0,0,0))
+                
                 if (utilService.checkDateIsValidFutureDate(new Date(), convertedDate)) {
-                    const currentPregnancyDay = 280-(convertedDate.getTime()- today.getTime())/(1000*3600*24)
-                    if(currentPregnancyDay<=0){
+                    const currentPregnancyDay = Math.floor((convertedDate.getTime()- today.getTime())/(1000*3600*24))
+                   
+                    if(currentPregnancyDay>=280){
                         bot.sendMessage(chatId, `Your EXPECTED DATE OF DELIVERY <b> ${message}</b> is out of the expected range.`
                         + ` Please verify and re-enter EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" })
                     }else{
-                    userService.update(user._id, { expectedDeliveryDate: convertedDate, currentPregnancyDay: currentPregnancyDay})
-                    userTrackerService.update(userTracker._id, { expectedDeliveryDate: convertedDate, registrationComplete: true ,pregnancyDayOnReg: currentPregnancyDay})
-                    const weeks = Math.floor(currentPregnancyDay / 7)
-                    const days = currentPregnancyDay % 7
+                    userService.update(user._id, { expectedDeliveryDate: convertedDate, currentPregnancyDay: (280-currentPregnancyDay)})
+                    userTrackerService.update(userTracker._id, { expectedDeliveryDate: convertedDate, registrationComplete: true ,pregnancyDayOnReg: (280-currentPregnancyDay)})
+                    const weeks = Math.floor((280-currentPregnancyDay) / 7)
+                    const days = (280-currentPregnancyDay)%7
 
                     bot.sendMessage(chatId, ` Thank you <b>${fname}</b> for registering with Pregnancy Prayer Bot. Congratulations you are <b><em>${weeks} </em></b> week(s) and <b><em>${days}</em></b> day(s) pregnant.`
                         + " \n\n Do you want to be motivated and inspired daily using the word of God?"
@@ -210,7 +211,7 @@ bot.on('message', async (msg) => {
             { parse_mode: "HTML",reply_markup:{remove_keyboard: true}})   
           
         }
-        setTimeout(()=>{messageSender.sendMessage(bot,true)}, 240000)
+        setTimeout(()=>{messageSender.sendMessage(bot,true)}, 120000)
     }
 })
 
