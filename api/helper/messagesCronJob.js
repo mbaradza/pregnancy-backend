@@ -30,7 +30,7 @@ function sendMessagesAtThree() {
     }
 
 function updateIntervalDayEnd(){
-  cron.schedule('0 22 * * *', () => {
+  cron.schedule('0 23 * * *', () => {
     trackerService.updateInterval();
   },
     {
