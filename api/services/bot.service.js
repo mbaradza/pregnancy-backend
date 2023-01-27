@@ -210,7 +210,7 @@ bot.on('message', async (msg) => {
             { parse_mode: "HTML",reply_markup:{remove_keyboard: true}})   
           
         }
-       setTimeout(messageSender.sendMessage(bot,true), 240000)
+        setTimeout(()=>{messageSender.sendMessage(bot,true)}, 240000)
     }
 })
 
