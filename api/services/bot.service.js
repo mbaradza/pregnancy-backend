@@ -78,11 +78,12 @@ bot.on('message', async (msg) => {
                         + ` go ahead and enter your EMAIL ADDRESS <b>(example: msthompson@gmail.com):</b>  `
                     bot.sendMessage(chatId, secondEmailReq, { parse_mode: "HTML" });
 
-                } else if (userTracker.currentDay == 0 && !userTracker.pregnancyDayOnReg) {
-                    const currentPrenancyDayMessage = `Welcome back <b>${fname}</b>,We realised you did not complete your registration. Please`
-                        + ` go ahead and enter your CURRENT PREGNANCY DAY <b>(format: number between 1 to 280: Example: 3):`
-                    bot.sendMessage(chatId, currentPrenancyDayMessage, { parse_mode: "HTML" });
-                }
+                } 
+                // else if (userTracker.currentDay == 0 && !userTracker.pregnancyDayOnReg) {
+                //     const currentPrenancyDayMessage = `Welcome back <b>${fname}</b>,We realised you did not complete your registration. Please`
+                //         + ` go ahead and enter your CURRENT PREGNANCY DAY <b>(format: number between 1 to 280: Example: 3):`
+                //     bot.sendMessage(chatId, currentPrenancyDayMessage, { parse_mode: "HTML" });
+                // }
                 else if (userTracker.currentDay == 0 && !userTracker.expectedDeliveryDate) {
                     const expectedDeliveryDateMessage = `Welcome back <b style="color:blue;"><em>${fname}<em></b>,We realised you did not complete your registration.Please`
                         + ` go ahead and enter your EXPECTED DATE OF DELIVERY <b>(format: dd/MM/YYYY: Example: 01/08/2023):</b> `
@@ -131,32 +132,23 @@ bot.on('message', async (msg) => {
                     //Save the Email 
                     userService.update(user._id, { email: message })
                     userTrackerService.update(userTracker._id, { emailSaved: true })
-                    bot.sendMessage(chatId, ` Please enter your CURRENT PREGNANCY DAY <b> (format: number between 1 to 280: Example: 3)</b> `
-                        , { parse_mode: "HTML" });
+                    bot.sendMessage(chatId, ` Please enter your EXPECTED DATE OF DELIVERY <b> (format: YYYY-MM-DD: Example: 2023-01-13) </b> `,
+                    { parse_mode: "HTML" });
                 }
             }
-        } else if (userTracker.currentDay == 0 && !userTracker.pregnancyDayOnReg) {
-
-            if (utilService.isValidNumber(message) && Number(message) <= 280 && Number(message) > 0) {
-                userService.update(user._id, { currentPregnancyDay: Number(message) })
-                userTrackerService.update(userTracker._id, { pregnancyDayOnReg: Number(message) })
-                bot.sendMessage(chatId, ` Please enter your EXPECTED DATE OF DELIVERY <b> (format: YYYY-MM-DD: Example: 2023-01-13) </b> `,
-                    { parse_mode: "HTML" });
-            } else {
-                bot.sendMessage(chatId, `Your CURRENT PREGNANCY DAY should be a number between 1 - 280. You entered an invalid response <em style="color:red;"> ${message}.</em> `
-                    + " Please re-enter the CURRENT PREGNANCY DAY:", { parse_mode: "HTML" });
-            }
-
         }
-        else if (userTracker.currentDay == 0 && !userTracker.expectedDeliveryDate) {
+        else if (!userTracker.expectedDeliveryDate) {
             if (utilService.isValidDate(message)) {
                 var timestamp = Date.parse(message)
                 var convertedDate = new Date(timestamp);
+                var today = new Date()
+
                 if (utilService.checkDateIsValidFutureDate(new Date(), convertedDate)) {
-                    userService.update(user._id, { expectedDeliveryDate: convertedDate })
-                    userTrackerService.update(userTracker._id, { expectedDeliveryDate: convertedDate, registrationComplete: true })
-                    const weeks = Math.floor(userTracker.pregnancyDayOnReg / 7)
-                    const days = userTracker.pregnancyDayOnReg % 7
+                    const currentPregnancyDay = Math.floor((convertedDate.getTime()- today.getTime())/(1000*3600*24))
+                    userService.update(user._id, { expectedDeliveryDate: convertedDate, currentPregnancyDay:  currentPregnancyDay})
+                    userTrackerService.update(userTracker._id, { expectedDeliveryDate: convertedDate, registrationComplete: true ,pregnancyDayOnReg: currentPregnancyDay})
+                    const weeks = Math.floor(userTracker.currentPregnancyDay / 7)
+                    const days = userTracker.currentPregnancyDay % 7
 
                     bot.sendMessage(chatId, ` Thank you <b>${fname}</b> for registering with Pregnancy Prayer Bot. Congratulations you are <b><em>${weeks} </em></b> week(s) and <b><em>${days}</em></b> day(s) pregnant.`
                         + " \n\n Do you want to be motivated and inspired daily using the word of God?"
