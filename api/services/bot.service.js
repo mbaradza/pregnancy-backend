@@ -144,8 +144,12 @@ bot.on('message', async (msg) => {
                 var today = new Date()
 
                 if (utilService.checkDateIsValidFutureDate(new Date(), convertedDate)) {
-                    const currentPregnancyDay = Math.floor((convertedDate.getTime()- today.getTime())/(1000*3600*24))
-                    userService.update(user._id, { expectedDeliveryDate: convertedDate, currentPregnancyDay:  currentPregnancyDay})
+                    const currentPregnancyDay = 280-Math.floor((convertedDate.getTime()- today.getTime())/(1000*3600*24))
+                    if(currentPregnancyDay<0){
+                        bot.sendMessage(chatId, " Your EXPECTED DATE OF DELIVERY is out of the expected range."
+                        + ` <b> ${message}</b>. Please verify and re-enter EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" })
+                    }else{
+                    userService.update(user._id, { expectedDeliveryDate: convertedDate, currentPregnancyDay: currentPregnancyDay})
                     userTrackerService.update(userTracker._id, { expectedDeliveryDate: convertedDate, registrationComplete: true ,pregnancyDayOnReg: currentPregnancyDay})
                     const weeks = Math.floor(userTracker.currentPregnancyDay / 7)
                     const days = userTracker.currentPregnancyDay % 7
@@ -153,6 +157,7 @@ bot.on('message', async (msg) => {
                     bot.sendMessage(chatId, ` Thank you <b>${fname}</b> for registering with Pregnancy Prayer Bot. Congratulations you are <b><em>${weeks} </em></b> week(s) and <b><em>${days}</em></b> day(s) pregnant.`
                         + " \n\n Do you want to be motivated and inspired daily using the word of God?"
                         +"Subscribe /here for $4.99 and receive our Pregnancy Prayer Guide Devotional daily ",{ parse_mode: "HTML" })
+                    }
                 } else {
                     bot.sendMessage(chatId, " Your EXPECTED DATE OF DELIVERY should not be a past date.You entered a past date"
                         + ` <b> ${message}</b>. Please re-nter the EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" })
