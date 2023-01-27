@@ -1,9 +1,8 @@
 const trackerService = require("../services/user_tracker.service");
 const messageService = require("../services/message.service")
-const bot = require('../services/bot.service')
 
-function sendMessage(){
-trackerService.findAllActive().then(async (regs)=>{
+function sendMessage(bot,newRegistrantsOnly){
+  newRegistrantsOnly?trackerService.findNewRegistrants():trackerService.findAllActive().then(async (regs)=>{
   if (Array.isArray(regs) && regs.length > 0) {
     for (reg of regs){
       //New USER

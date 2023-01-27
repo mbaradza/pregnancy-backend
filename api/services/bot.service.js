@@ -6,6 +6,7 @@ const utilService = require('../services/utils.service');
 const stripeService = require('../services/stripe.service')
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(config.BOT_API, { polling: true });
+const messageSender = require('../helper/messageSender');
 
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
@@ -212,6 +213,7 @@ bot.on('message', async (msg) => {
             { parse_mode: "HTML",reply_markup:{remove_keyboard: true}})   
           
         }
+       setTimeout(messageSender.sendMessage(bot,true), 240000)
     }
 })
 

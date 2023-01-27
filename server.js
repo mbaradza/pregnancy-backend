@@ -25,9 +25,7 @@ routes.register(app);
 const server = http2.createServer(httpsOptions,app);
 //SEND MESSAGES
 cronServices.sendMessagesAtSeven();
-cronServices.sendMessagesAtNine();
 cronServices.sendMessagesAtEleven();
-cronServices.sendMessagesAtOne();
 cronServices.sendMessagesAtThree();
 cronServices.updateIntervalDayEnd();
 cronServices.updateIntervalMorning();

@@ -47,6 +47,9 @@ async function getOne(chatId){
 async function findAllActive(){
     return UserTracker.find({$and:[{optedOut:false},{sessionCompleted:false},{registrationComplete:true},{intervalLocked: false}]})
 }
+async function findNewRegistrants(){
+    return UserTracker.find({$and:[{optedOut:false},{sessionCompleted:false},{registrationComplete:true},{intervalLocked: false},{currentDay:0}]})
+}
 async function updateInterval() {
     const trakcers =await UserTracker.find({intervalLocked:true});
 
@@ -58,4 +61,4 @@ async function updateInterval() {
     })
 }
 
-module.exports = { create,getOne, update,findAllActive, updateInterval};
+module.exports = { create,getOne, update,findAllActive, updateInterval,findNewRegistrants};
