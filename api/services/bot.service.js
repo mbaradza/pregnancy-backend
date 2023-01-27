@@ -26,7 +26,7 @@ bot.on('message', async (msg) => {
             +"of her pregnancy plus a daily prayer for her growing child.\n"
             +"This Bot serves to encourage mummy-to-be and pray the word of God over your baby daily for the entire 280 days <em>(40 weeks)</em>  "
             +"gestation period. \n \n"
-        const emailRequest = `Now lets start by registering.\n Enter your EMAIL ADDRESS(example: msthompson@gmail.com):`
+        const emailRequest = `Now lets start by registering.\n Enter your email address (example: msthompson@gmail.com):`
         if (!userTracker) {
             // Create New USer    
             let user = {
@@ -75,18 +75,14 @@ bot.on('message', async (msg) => {
             if (!userTracker.registrationComplete) {
                 if (!userTracker.emailSaved) {
                     const secondEmailReq = `Welcome back <b>${fname}</b>,We realised you did not complete your registration. Please`
-                        + ` go ahead and enter your EMAIL ADDRESS <b>(example: msthompson@gmail.com):</b>  `
+                        + ` go ahead and enter your email address <b>(example: msthompson@gmail.com):</b>  `
                     bot.sendMessage(chatId, secondEmailReq, { parse_mode: "HTML" });
 
                 } 
-                // else if (userTracker.currentDay == 0 && !userTracker.pregnancyDayOnReg) {
-                //     const currentPrenancyDayMessage = `Welcome back <b>${fname}</b>,We realised you did not complete your registration. Please`
-                //         + ` go ahead and enter your CURRENT PREGNANCY DAY <b>(format: number between 1 to 280: Example: 3):`
-                //     bot.sendMessage(chatId, currentPrenancyDayMessage, { parse_mode: "HTML" });
-                // }
+                
                 else if (userTracker.currentDay == 0 && !userTracker.expectedDeliveryDate) {
                     const expectedDeliveryDateMessage = `Welcome back <b style="color:blue;"><em>${fname}<em></b>,We realised you did not complete your registration.Please`
-                        + ` go ahead and enter your EXPECTED DATE OF DELIVERY <b>(format: dd/MM/YYYY: Example: 01/08/2023):</b> `
+                        + ` go ahead and enter your Expected Date Of Delivery (EDD) <b>(format: dd/MM/YYYY: Example: 01/08/2023):</b> `
                     bot.sendMessage(chatId, expectedDeliveryDateMessage, { parse_mode: "HTML" });
                 }
 
@@ -114,7 +110,7 @@ bot.on('message', async (msg) => {
 
         const message = String(msg.text).trim();
         if (!userTracker.emailSaved) {
-            const invalidEmail = ` The entered email <b> ${message} </b> is invalid,please. Please re-enter your EMAIL ADDRESS <em>(example: msthompson@gmail.com):</em> `
+            const invalidEmail = ` The entered email <b> ${message} </b> is invalid,please. Please re-enter your email address <b>(example: msthompson@gmail.com):</b> `
 
             if (!utilService.isValidEmail(message)) {
                 bot.sendMessage(chatId, invalidEmail, { parse_mode: "HTML" });
@@ -132,7 +128,7 @@ bot.on('message', async (msg) => {
                     //Save the Email 
                     userService.update(user._id, { email: message })
                     userTrackerService.update(userTracker._id, { emailSaved: true })
-                    bot.sendMessage(chatId, ` Please enter your EXPECTED DATE OF DELIVERY <b> (format: YYYY-MM-DD: Example: 2023-01-13) </b> `,
+                    bot.sendMessage(chatId, ` Please enter your Expected Date Of Delivery(EDD) <b> (format: YYYY-MM-DD: Example: 2023-01-13) </b> `,
                     { parse_mode: "HTML" });
                 }
             }
