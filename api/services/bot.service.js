@@ -3,7 +3,6 @@ const TelegramBot = require('node-telegram-bot-api');
 const userTrackerService = require('../services/user_tracker.service');
 const userService = require('../services/user.service');
 const utilService = require('../services/utils.service');
-const stripeService = require('../services/stripe.service')
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(config.BOT_API, { polling: true });
 const messageSender = require('../helper/messageSender');
@@ -82,7 +81,7 @@ bot.on('message', async (msg) => {
                 
                 else if (userTracker.currentDay == 0 && !userTracker.expectedDeliveryDate) {
                     const expectedDeliveryDateMessage = `Welcome back <b style="color:blue;"><em>${fname}<em></b>,We realised you did not complete your registration.Please`
-                        + ` go ahead and enter your Expected Date Of Delivery (EDD) <b>(format: dd/MM/YYYY: Example: 01/08/2023):</b> `
+                        + ` go ahead and enter your Expected Date Of Delivery (EDD) <b>(format: YYYY-MM-DD: Example: 2023-01-13):</b> `
                     bot.sendMessage(chatId, expectedDeliveryDateMessage, { parse_mode: "HTML" });
                 }
 
@@ -109,9 +108,9 @@ bot.on('message', async (msg) => {
         let userTracker = await userTrackerService.getOne(chatId);
 
         const message = String(msg.text).trim();
+        const invalidEmail = ` The entered email <b> ${message} </b> is invalid,please. Please re-enter your email address <b>(example: msthompson@gmail.com):</b> `
         if (!userTracker.emailSaved) {
-            const invalidEmail = ` The entered email <b> ${message} </b> is invalid,please. Please re-enter your email address <b>(example: msthompson@gmail.com):</b> `
-
+            
             if (!utilService.isValidEmail(message)) {
                 bot.sendMessage(chatId, invalidEmail, { parse_mode: "HTML" });
 
@@ -153,7 +152,7 @@ bot.on('message', async (msg) => {
 
                     bot.sendMessage(chatId, ` Thank you <b>${fname}</b> for registering with Pregnancy Prayer Bot. Congratulations you are <b><em>${weeks} </em></b> week(s) and <b><em>${days}</em></b> day(s) pregnant.`
                         + " \n\n Do you want to be motivated and inspired daily using the word of God?"
-                        +"Subscribe /here for $4.99 and receive our Pregnancy Prayer Guide Devotional daily ",{ parse_mode: "HTML" })
+                        +"In case of an error, click /update to correct the entered data ",{ parse_mode: "HTML" })
                     }
                 } else {
                     bot.sendMessage(chatId, " Your EXPECTED DATE OF DELIVERY should not be a past date.You entered a past date"
@@ -165,45 +164,72 @@ bot.on('message', async (msg) => {
                     + `<em> ${message} </em>. Please re-nter the EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" });
             }
         } 
-        else if(message.toLowerCase().includes('\/subscribe') || message.toLowerCase().includes('\/here') || message=='subscribe'){
-            if(!userTracker.hasSubscribed){
-                bot.sendMessage(chatId, "<b>The subscription amount is </b> <em><b>USD$4.99</b></em>.Please click <b>'Pay'</b> to go to the payment page",{
+        else if(message.toLowerCase().includes('\/update') || message=='update'){
+                bot.sendMessage(chatId, "<b>Which field do you want to update? </b>",{
                 parse_mode: 'HTML',
                 reply_markup: {
-                  keyboard: [['Pay'], ['Not Now']],
+                  keyboard: [['EMAIL'], ['EDD'],'CANCEL'],
                   remove_keyboard: true
                 }
             },
             {parse_mode: "HTML"})
        
-        }else{
-            bot.sendMessage(chatId, "You already have a running subscription, if you have any queries please call/whatsapp <em>+263777807782</em>",{ parse_mode: "HTML",
-            reply_markup:{remove_keyboard: true} })        
-          }
+        } else if(message=='EMAIL'){
 
-        } else if(msg.text.toLowerCase()=='pay'){
-            if(!userTracker.hasSubscribed){
-            await bot.sendMessage(chatId,`Dear <em>${fname}</em> A payment link is being generated below, please click the link and proceed to make your payment!`,{
-              parse_mode: 'HTML',reply_markup:{remove_keyboard: true}})
-            const paymentURL = await stripeService.checkout(chatId,fname,userTracker._id);
-            if(paymentURL && paymentURL!='null'){
-                await bot.sendMessage(chatId,paymentURL);
-            } else{
-                await bot.sendMessage(chatId,"An error occurred wilest generating the payment url.Please send the word <em>Pay</em> to try again later"
-                ,{parse_mode: 'HTML'});
-            }
-             
-              
-            }
-             else{
-                bot.sendMessage(chatId, "You already have a running subscription, if you have any queries please call/whatsapp <em>+263777807782</em>",{ 
-                    parse_mode: 'HTML',
-                    reply_markup:{remove_keyboard: true}
-                })            
+            if (!utilService.isValidEmail(message)) {
+                bot.sendMessage(chatId, invalidEmail, { parse_mode: "HTML" });
+
+            } else {
+                const duplicateEmail = await userService.existsByEmail(message).then(v => {
+                    return v
+                }).catch(e => {
+                    console.log("Email Duplicate Validation", e)
+                })
+                if (duplicateEmail) {
+                    bot.sendMessage(chatId, ` The provided email <b> ${message} </b> has been registered by another user already, please provide another email, to proceed:`
+                        , { parse_mode: "HTML" });
+                } else {
+                    //Save the Email 
+                    userService.update(user._id, { email: message })
+                    bot.sendMessage(chatId, ` <b>Your Email has been successfully update to ${message} </b> `,
+                    { parse_mode: "HTML" });
+                }
             }
         
-        } else if(msg.text.toLowerCase().replace(/\s/g, '')=='notnow'){
-            bot.sendMessage(chatId, "You can take your time, and whenever you decide to subscribe, just send the word <em>pay</em> and we will take it from there. ",
+        } else if(message=='EDD'){
+            if (utilService.isValidDate(message)) {
+                var timestamp = Date.parse(message)
+                var convertedDate = new Date(timestamp);
+                var today = new Date(new Date().setUTCHours(0,0,0,0))
+                
+                if (utilService.checkDateIsValidFutureDate(new Date(), convertedDate)) {
+                    const currentPregnancyDay = Math.floor((convertedDate.getTime()- today.getTime())/(1000*3600*24))
+                   
+                    if(currentPregnancyDay>=280){
+                        bot.sendMessage(chatId, `Your EXPECTED DATE OF DELIVERY <b> ${message}</b> is out of the expected range.`
+                        + ` Please verify and re-enter EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" })
+                    }else{
+                    userService.update(user._id, { expectedDeliveryDate: convertedDate, currentPregnancyDay: (280-currentPregnancyDay)})
+                    userTrackerService.update(userTracker._id, { expectedDeliveryDate: convertedDate,pregnancyDayOnReg: (280-currentPregnancyDay),
+                        dailyDevotionalsShared: false,dailyMessagesShared: false, currentDay:(280-currentPregnancyDay) })
+                    const weeks = Math.floor((280-currentPregnancyDay) / 7)
+                    const days = (280-currentPregnancyDay)%7
+
+                    bot.sendMessage(chatId, ` <b>Your EDD has been updated to <em>${message}</em>. Congratulations you are <b><em>${weeks} </em></b> week(s) and <b><em>${days}</em></b> day(s) pregnant.`
+                        +"<em>In case of any other errors, click /update to correct the entered data </em>",{ parse_mode: "HTML" })
+                    }
+                } else {
+                    bot.sendMessage(chatId, " Your EXPECTED DATE OF DELIVERY should not be a past date.You entered a past date"
+                        + ` <b> ${message}</b>. Please re-nter the EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" })
+                }
+
+            } else {
+                bot.sendMessage(chatId, " Your EXPECTED DATE OF DELIVERY should be a valid date in the format YYYY-MM-DD.You entered an invalid response"
+                    + `<em> ${message} </em>. Please re-nter the EXPECTED DATE OF DELIVERY: `, { parse_mode: "HTML" });
+            }
+
+        }else if(msg.text=='CANCEL'){
+            bot.sendMessage(chatId, "Your update request has been cancelled. Click /update if ever you want to update data",
             { parse_mode: "HTML",reply_markup:{remove_keyboard: true}})   
           
         }
