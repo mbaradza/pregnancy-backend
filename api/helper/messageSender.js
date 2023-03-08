@@ -96,9 +96,11 @@ async function sendMessage(bot, newRegistrantsOnly) {
                 '<em>In case of an other errors, click /update to correct the entered data </em>'
 
               }
-              bot.sendMessage(chatId, devotional, { parse_mode: "HTML" }).then(async r => {
+             await bot.sendMessage(chatId, devotional, { parse_mode: "HTML" }).then(async r => {
                 await trackerService.update(reg._id, { dailyDevotionalsShared: true})
               })
+              let amazonLink = 'https://www.amazon.com/shop/pregnancyprayerguide'
+              await bot.sendMessage(chatId, amazonLink+`.\n <em>Prep for your pregnancy and baby. Follow the above link and get some inspiration and shop. `, { parse_mode: "HTML" })
             }
           await trackerService.update(reg._id, { intervalLocked: true })
         }
