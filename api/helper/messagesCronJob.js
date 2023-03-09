@@ -21,7 +21,7 @@ function sendMessagesAtEleven() {
     });
     }
 function sendMessagesAtThree() {
-      cron.schedule('0 15 * * *', async () => {
+      cron.schedule('30 15 * * *', async () => {
         await messageSender.sendMessage(bot,false);
       }, {
         scheduled: true,
