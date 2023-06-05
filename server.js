@@ -16,10 +16,7 @@ var httpsOptions = {
   'ca' : fs.readFileSync(__dirname +'/keys/server.crt')
 };
 
-// Connecting to database
-mongoose.connect(config.mongo.url, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(r =>{
-  console.log('Database Connected...');
-}).catch(r =>{ console.log('Database Not Connected!!', r)});
+
 
 routes.register(app);
 const server = http2.createServer(httpsOptions,app);
@@ -32,6 +29,11 @@ cronServices.updateIntervalMorning();
 
 // Listening to port
 server.listen(3001,async () => {
+  // Connecting to database
+await mongoose.connect(config.mongo.url, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(r =>{
+  console.log('Database Connected...');
+}).catch(r =>{ console.log('Database Not Connected!!', r)});
+
  await messageService.uploadMessages();
   console.log('Server running on localhost:3001');
 });
