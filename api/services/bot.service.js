@@ -232,7 +232,10 @@ bot.on( "callback_query", async ( msg ) =>
                             } else
                             {
                                 let userTracker = await userTrackerService.getOne( chatId );
-                                userService.update( user._id, { expectedDeliveryDate: convertedDate, currentPregnancyDay: ( 280 - currentPregnancyDay ) } )
+                                if ( user && user._id )
+                                {
+                                    userService.update( user._id, { expectedDeliveryDate: convertedDate, currentPregnancyDay: ( 280 - currentPregnancyDay ) } );
+                                }
                                 userTrackerService.update( userTracker._id, {
                                     expectedDeliveryDate: convertedDate, pregnancyDayOnReg: ( 280 - currentPregnancyDay ),
                                     dailyDevotionalsShared: false, dailyMessagesShared: false, currentDay: ( 280 - currentPregnancyDay )
@@ -279,7 +282,10 @@ bot.on( "callback_query", async ( msg ) =>
                         } else
                         {
                             //Save the Email 
-                            userService.update( user._id, { email: message.text } )
+                            if ( user && user._id )
+                            {
+                                userService.update( user._id, { email: message.text } );
+                            }
                             bot.sendMessage( chatId, `Your Email has been successfully update to ${ message.text } `,
                                 { parse_mode: "HTML" } );
                         }
