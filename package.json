@@ -14,11 +14,10 @@
     "mongodb": "^3.2.6",
     "mongoose": "^5.5.11",
     "node-cron": "^3.0.2",
-    "node-telegram-bot-api": "^0.61.0",
+    "node-telegram-bot-api": "^0.64.0",
     "read-excel-file": "5.5.3",
     "stripe": "^11.7.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "npm start",
     "start": "node server.js --trace-warnings"
